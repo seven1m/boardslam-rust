@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 use std::iter::FromIterator;
 use std::fmt;
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum Op {
     Add,
     Subtract,
@@ -144,7 +144,15 @@ fn op(n1: u8, op: &Op, n2: u8) -> u8 {
         &Op::Add => n1.saturating_add(n2),
         &Op::Subtract => n1.saturating_sub(n2),
         &Op::Multipy => n1.saturating_mul(n2),
-        &Op::Divide => n1.checked_div(n2).unwrap_or(0),
+        &Op::Divide => {
+            if n2 == 0 {
+                return 0;
+            }
+            if n1.checked_rem(n2).expect("div by 0 not possible") != 0 {
+                return 0;
+            }
+            n1.checked_div(n2).expect("div by 0 not possible")
+        }
     }
 }
 
@@ -192,5 +200,19 @@ mod test {
         let results = fill_board(3, 5, 1);
         let missing = get_missing(&results);
         assert_eq!(vec![19, 30], missing);
+    }
+
+    #[test]
+    fn test_3_4_2() {
+        let results = fill_board(3, 4, 2);
+        let answer = results.get(&22).unwrap();
+        assert_eq!(4, answer.x.number);
+        assert_eq!(3, answer.x.power);
+        assert_eq!(Op::Add, answer.op1);
+        assert_eq!(2, answer.y.number);
+        assert_eq!(1, answer.y.power);
+        assert_eq!(Op::Divide, answer.op2);
+        assert_eq!(3, answer.z.number);
+        assert_eq!(1, answer.z.power);
     }
 }
