@@ -100,31 +100,25 @@ fn print(results: &HashMap<u8, Answer>) {
 fn fill_board(n1: u8, n2: u8, n3: u8) -> HashMap<u8, Answer> {
     let mut results: HashMap<u8, Answer> = HashMap::with_capacity(BOARD_SIZE as usize);
     let numbers = vec![n1, n2, n3];
+    let perms = permutations(&numbers);
     let powers = [1, 0, 2, 3];
     let ops = [Op::Add, Op::Subtract, Op::Multipy, Op::Divide];
     for op1 in ops.iter() {
         for op2 in ops.iter() {
-            for (x_index, x) in numbers.iter().enumerate() {
-                let mut numbers_without_x = numbers.clone();
-                numbers_without_x.remove(x_index);
-                for (y_index, y) in numbers_without_x.iter().enumerate() {
-                    let mut numbers_without_x_and_y = numbers_without_x.clone();
-                    numbers_without_x_and_y.remove(y_index);
-                    let z = &numbers_without_x_and_y[0];
-                    for x_power in &powers {
-                        for y_power in &powers {
-                            for z_power in &powers {
-                                let x_final = x.pow(*x_power);
-                                let y_final = y.pow(*y_power);
-                                let z_final = z.pow(*z_power);
-                                let answer = op(x_final, op1, y_final);
-                                let answer = op(answer, op2, z_final);
-                                if answer != 0 && answer <= BOARD_SIZE && !results.contains_key(&answer) {
-                                    results.insert(
-                                        answer,
-                                        Answer::from(x, x_power, op1, y, y_power, op2, z, z_power)
-                                    );
-                                }
+            for &(x, y, z) in &perms {
+                for x_power in &powers {
+                    for y_power in &powers {
+                        for z_power in &powers {
+                            let x_final = x.pow(*x_power);
+                            let y_final = y.pow(*y_power);
+                            let z_final = z.pow(*z_power);
+                            let answer = op(x_final, op1, y_final);
+                            let answer = op(answer, op2, z_final);
+                            if answer != 0 && answer <= BOARD_SIZE && !results.contains_key(&answer) {
+                                results.insert(
+                                    answer,
+                                    Answer::from(&x, x_power, op1, &y, y_power, op2, &z, z_power)
+                                );
                             }
                         }
                     }
@@ -162,6 +156,21 @@ fn get_missing(results: &HashMap<u8, Answer>) -> Vec<u8> {
     let mut missing: Vec<u8> = possible.difference(&found).cloned().collect();
     missing.sort();
     missing
+}
+
+fn permutations(numbers: &Vec<u8>) -> Vec<(u8, u8, u8)> {
+    let mut perms: Vec<(u8, u8, u8)> = vec![];
+    for (x_index, x) in numbers.iter().enumerate() {
+        let mut numbers_without_x = numbers.clone();
+        numbers_without_x.remove(x_index);
+        for (y_index, y) in numbers_without_x.iter().enumerate() {
+            let mut numbers_without_x_and_y = numbers_without_x.clone();
+            numbers_without_x_and_y.remove(y_index);
+            let z = &numbers_without_x_and_y[0];
+            perms.push((*x, *y, *z));
+        }
+    }
+    perms
 }
 
 #[cfg(test)]
