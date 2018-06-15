@@ -30,7 +30,7 @@ struct Value {
 impl std::fmt::Display for Value {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.power == 1 {
-            write!(f, "{:<3}", self.number)
+            write!(f, "{}", self.number)
         } else {
             write!(f, "{}^{}", self.number, self.power)
         }
@@ -85,7 +85,15 @@ fn print(results: &HashMap<u8, Answer>) {
     numbers.sort();
     for number in numbers.iter() {
         let answer = results.get(number).unwrap();
-        println!("{} {} {} {} {} = {}", answer.x, answer.op1, answer.y, answer.op2, answer.z, number);
+        println!(
+            "{:3} {} {:3} {} {:3} = {}",
+            answer.x.to_string(),
+            answer.op1,
+            answer.y.to_string(),
+            answer.op2,
+            answer.z.to_string(),
+            number
+        );
     }
 }
 
