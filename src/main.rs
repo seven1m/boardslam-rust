@@ -140,7 +140,7 @@ fn op(n1: u8, op: &Op, n2: u8) -> u8 {
 
 fn get_missing(results: &HashMap<u8, Answer>) -> Vec<u8> {
     let found: HashSet<u8> = HashSet::from_iter(results.keys().cloned());
-    let possible: HashSet<u8> = HashSet::from_iter((1..BOARD_SIZE));
+    let possible: HashSet<u8> = HashSet::from_iter(1..BOARD_SIZE+1);
     let mut missing: Vec<u8> = possible.difference(&found).cloned().collect();
     missing.sort();
     missing
@@ -164,6 +164,13 @@ fn permutations(numbers: &Vec<u8>) -> Vec<(u8, u8, u8)> {
 #[cfg(test)]
 mod test {
     use super::*;
+
+    #[test]
+    fn test_1_1_1() {
+        let results = fill_board(1, 1, 1);
+        let missing = get_missing(&results);
+        assert_eq!(vec![4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36], missing);
+    }
 
     #[test]
     fn test_2_2_2() {
