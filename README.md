@@ -4,10 +4,17 @@ This is a port of my [boardslam.rb script](https://gist.github.com/seven1m/6a367
 
 Explanation here: [seven1m.sdf.org/experiments/boardslam.cgi](http://seven1m.sdf.org/experiments/boardslam.cgi)
 
+## Build
+
+1. [Install Rust](https://rustup.rs/)
+
+2. Run `cargo build --release`
+
 ## Usage
 
 ```
-./boardslam-rust 1 2 3
+target/release/boardslam-rust 1 2 3
+
 1   + 2^0 - 3^0 = 1
 1   + 2   - 3^0 = 2
 1   + 2^0 + 3^0 = 3
