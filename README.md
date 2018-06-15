@@ -13,7 +13,7 @@ Explanation here: [seven1m.sdf.org/experiments/boardslam.cgi](http://seven1m.sdf
 ## Usage
 
 ```
-target/release/boardslam-rust 1 2 3
+target/release/boardslam 1 2 3
 
 1   + 2^0 - 3^0 = 1
 1   + 2   - 3^0 = 2
