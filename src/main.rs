@@ -131,22 +131,10 @@ fn fill_board(n1: u8, n2: u8, n3: u8) -> HashMap<u8, Answer> {
 
 fn op(n1: u8, op: &Op, n2: u8) -> u8 {
     match op {
-        &Op::Add => n1.saturating_add(n2),
-        &Op::Subtract => {
-            if n1 >= n2 {
-                n1 - n2
-            } else {
-                0
-            }
-        },
-        &Op::Multipy => n1.saturating_mul(n2),
-        &Op::Divide => {
-            if n2 == 0 {
-                0
-            } else {
-                n1 / n2
-            }
-        },
+        &Op::Add      => n1.saturating_add(n2),
+        &Op::Subtract => n1.saturating_sub(n2),
+        &Op::Multipy  => n1.saturating_mul(n2),
+        &Op::Divide   => n1.checked_div(n2).unwrap_or(0),
     }
 }
 
