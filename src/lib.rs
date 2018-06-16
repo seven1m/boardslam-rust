@@ -58,9 +58,11 @@ impl Answer {
     }
 }
 
+pub type Board = HashMap<u8, Answer>;
+
 const BOARD_SIZE: u8 = 36;
 
-pub fn print(results: &HashMap<u8, Answer>) {
+pub fn print(results: &Board) {
     let mut numbers: Vec<&u8> = results.keys().collect();
     numbers.sort();
     for number in numbers.iter() {
@@ -77,8 +79,8 @@ pub fn print(results: &HashMap<u8, Answer>) {
     }
 }
 
-pub fn fill_board(n1: u8, n2: u8, n3: u8) -> HashMap<u8, Answer> {
-    let mut results: HashMap<u8, Answer> = HashMap::with_capacity(BOARD_SIZE as usize);
+pub fn fill_board(n1: u8, n2: u8, n3: u8) -> Board {
+    let mut results: Board = HashMap::with_capacity(BOARD_SIZE as usize);
     let numbers = vec![n1, n2, n3];
     let perms = permutations(&numbers);
     let powers = [1, 0, 2, 3];
@@ -109,7 +111,7 @@ pub fn fill_board(n1: u8, n2: u8, n3: u8) -> HashMap<u8, Answer> {
     results
 }
 
-pub fn get_missing(results: &HashMap<u8, Answer>) -> Vec<u8> {
+pub fn get_missing(results: &Board) -> Vec<u8> {
     let found: HashSet<u8> = HashSet::from_iter(results.keys().cloned());
     let possible: HashSet<u8> = HashSet::from_iter(1..BOARD_SIZE+1);
     let mut missing: Vec<u8> = possible.difference(&found).cloned().collect();
