@@ -13,10 +13,10 @@ pub enum Op {
 impl std::fmt::Display for Op {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let s = match self {
-            &Op::Add      => "+",
+            &Op::Add => "+",
             &Op::Subtract => "-",
-            &Op::Multipy  => "*",
-            &Op::Divide   => "/",
+            &Op::Multipy => "*",
+            &Op::Divide => "/",
         };
         write!(f, "{}", &s)
     }
@@ -42,18 +42,35 @@ pub struct Answer {
     pub op1: Op,
     pub y: Value,
     pub op2: Op,
-    pub z: Value
-
+    pub z: Value,
 }
 
 impl Answer {
-    pub fn from(x: &u8, x_power: &u32, op1: &Op, y: &u8, y_power: &u32, op2: &Op, z: &u8, z_power: &u32) -> Answer {
+    pub fn from(
+        x: &u8,
+        x_power: &u32,
+        op1: &Op,
+        y: &u8,
+        y_power: &u32,
+        op2: &Op,
+        z: &u8,
+        z_power: &u32,
+    ) -> Answer {
         Answer {
-            x: Value { number: x.clone(), power: x_power.clone() },
+            x: Value {
+                number: x.clone(),
+                power: x_power.clone(),
+            },
             op1: op1.clone(),
-            y: Value { number: y.clone(), power: y_power.clone() },
+            y: Value {
+                number: y.clone(),
+                power: y_power.clone(),
+            },
             op2: op2.clone(),
-            z: Value { number: z.clone(), power: z_power.clone() },
+            z: Value {
+                number: z.clone(),
+                power: z_power.clone(),
+            },
         }
     }
 }
@@ -62,21 +79,23 @@ pub type Board = HashMap<u8, Answer>;
 
 const BOARD_SIZE: u8 = 36;
 
-pub fn print(results: &Board) {
+pub fn display(results: &Board) -> String {
     let mut numbers: Vec<&u8> = results.keys().collect();
     numbers.sort();
+    let mut result = String::new();
     for number in numbers.iter() {
         let answer = results.get(number).unwrap();
-        println!(
-            "{:3} {} {:3} {} {:3} = {}",
+        result.push_str(&format!(
+            "{:3} {} {:3} {} {:3} = {}\n",
             answer.x.to_string(),
             answer.op1,
             answer.y.to_string(),
             answer.op2,
             answer.z.to_string(),
             number
-        );
+        ));
     }
+    result
 }
 
 pub fn fill_board(n1: u8, n2: u8, n3: u8) -> Board {
@@ -96,10 +115,11 @@ pub fn fill_board(n1: u8, n2: u8, n3: u8) -> Board {
                             let z_final = z.pow(*z_power);
                             let answer = op(x_final, op1, y_final);
                             let answer = op(answer, op2, z_final);
-                            if answer != 0 && answer <= BOARD_SIZE && !results.contains_key(&answer) {
+                            if answer != 0 && answer <= BOARD_SIZE && !results.contains_key(&answer)
+                            {
                                 results.insert(
                                     answer,
-                                    Answer::from(&x, x_power, op1, &y, y_power, op2, &z, z_power)
+                                    Answer::from(&x, x_power, op1, &y, y_power, op2, &z, z_power),
                                 );
                             }
                         }
@@ -113,7 +133,7 @@ pub fn fill_board(n1: u8, n2: u8, n3: u8) -> Board {
 
 pub fn get_missing(results: &Board) -> Vec<u8> {
     let found: HashSet<u8> = HashSet::from_iter(results.keys().cloned());
-    let possible: HashSet<u8> = HashSet::from_iter(1..BOARD_SIZE+1);
+    let possible: HashSet<u8> = HashSet::from_iter(1..BOARD_SIZE + 1);
     let mut missing: Vec<u8> = possible.difference(&found).cloned().collect();
     missing.sort();
     missing
@@ -121,10 +141,10 @@ pub fn get_missing(results: &Board) -> Vec<u8> {
 
 fn op(n1: u8, op: &Op, n2: u8) -> u8 {
     match op {
-        &Op::Add      => n1.saturating_add(n2),
+        &Op::Add => n1.saturating_add(n2),
         &Op::Subtract => n1.saturating_sub(n2),
-        &Op::Multipy  => n1.saturating_mul(n2),
-        &Op::Divide   => n1.checked_div(n2).unwrap_or(0),
+        &Op::Multipy => n1.saturating_mul(n2),
+        &Op::Divide => n1.checked_div(n2).unwrap_or(0),
     }
 }
 
@@ -151,7 +171,13 @@ mod test {
     fn test_1_1_1() {
         let results = fill_board(1, 1, 1);
         let missing = get_missing(&results);
-        assert_eq!(vec![4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36], missing);
+        assert_eq!(
+            vec![
+                4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+                26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36,
+            ],
+            missing
+        );
     }
 
     #[test]
