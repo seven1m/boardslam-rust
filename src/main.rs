@@ -17,9 +17,12 @@ fn main() {
         process::exit(1);
     }
     let results = fill_board(n1, n2, n3);
-    print(&results);
+    println!("{}", display(&results));
     let missing = get_missing(&results);
-    let missing = missing.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
+    let missing = missing
+        .iter()
+        .map(|n| n.to_string())
+        .collect::<Vec<String>>()
+        .join(", ");
     println!("\nmissing: {}", missing);
 }
-
